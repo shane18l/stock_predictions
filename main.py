@@ -8,7 +8,6 @@ from sklearn.metrics import precision_score
 data = yf.Ticker('AAPL')
 
 stock = data.history(period="max")
-print(stock)
 
 # stock.plot.line(y="Close", use_index=True)
 # plt.show()
@@ -61,10 +60,10 @@ def backtest(data, model, predictor_factors, start=2500, step = 250):
         all_preds.append(predictions)
     return pd.concat(all_preds)
 
-predictions = backtest(stock, model, predictor_factors)
-print(predictions["Predictions"].value_counts())
-print(precision_score(predictions["Target"], predictions["Predictions"]))
-print(predictions["Target"].value_counts() / predictions.shape[0])
+# predictions = backtest(stock, model, predictor_factors)
+# print(predictions["Predictions"].value_counts())
+# print(precision_score(predictions["Target"], predictions["Predictions"]))
+# print(predictions["Target"].value_counts() / predictions.shape[0])
 
 # Adding more predictor factors to enhance the model
 time_intervals = [2,5,60,250,1000]
@@ -82,4 +81,10 @@ for interval in time_intervals:
 
     new_predictor_factors += [ratio_column, trend_column]
 
+predictions = backtest(stock, model, new_predictor_factors) 
+print(predictions["Predictions"].value_counts())
+print(precision_score(predictions["Target"], predictions["Predictions"]))
+
+
 stock = stock.dropna()
+stock.to_csv("files/stock_data.csv", index=True)
